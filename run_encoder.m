@@ -5,15 +5,25 @@
 
 %%
 
-num_sweeps = 30;
+num_video_sweeps = 30;
+%num_encoder_sweeps = 2;
 
-samples_to_acquire = 1000; 
+%%currently 10 fold higher sampling in encoder sweeps than video sweeps
+
+%samples_to_acquire = 100000; 
 frames_to_acquire = 1000;
+samples_to_acquire = frames_to_acquire*10;
 
-for i=1:num_sweeps
+for i=1:num_video_sweeps
+disp('on sweep');
+disp(i); 
+    
+f1 = parfeval(@acquireEncoderSamplesParallel, 3, samples_to_acquire, pdir); 
+%only run encoder while video is also acquiring 
+if f1.State == 'running'
+    f2 = parfeval(@singleCamAcquisition_disklogging, 1, behavCam, frames_to_acquire, pdir);
+end
 
-f1 = parfeval(@acquireEncoderSamplesParallel, 3, samples_to_acquire, pdir);
-f2 = parfeval(@singleCamAcquisition_disklogging, 1, behavCam, frames_to_acquire, pdir); 
 
 [outputState_encoder, encoderData, triggerTimes] = fetchOutputs(f1);
 [outputState_cam] = fetchOutputs(f2);

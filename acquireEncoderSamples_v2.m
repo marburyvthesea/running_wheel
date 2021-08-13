@@ -3,15 +3,16 @@ outputState='running';
 %for logging data 
 filetime = datestr(datetime,'yyyymmdd-HHMM');
 
-%triggerTimes = datetime(zeros(numSamples,1), 0, 0, 'format', 'HH:mm:ss.SSS');
-triggerTimes = zeros(numSamples,6); 
+%triggerTimes = zeros(numSamples,6);
+triggerTimes = datetime(zeros(numSamples,1), 0, 0, 'format', 'HH:mm:ss.SSS');
+
 % 7 channels from rotary encoder
 dataTimeSeries = zeros(numSamples,7); 
 
 for i = 1:numSamples
     [data,~] = inputSingleScan(daqSession);
     dataTimeSeries(i,:) = data;
-    triggerTimes(i,:) = clock;
+    triggerTimes(i,:) = datetime('now', 'format', 'HH:mm:ss.SSS');
 end
     
 exp_name = [saveDir, '\', filetime, 'rotary_test_out.csv'] ; 
