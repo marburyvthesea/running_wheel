@@ -1,4 +1,4 @@
-function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, sweepTimeSeconds, pdir)
+function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, sweepTimeSeconds, pdir, sweepNum)
  
 %%init
 triggerconfig(inputCam, 'manual');
@@ -10,7 +10,7 @@ freq = 20 ;
 filetime = datestr(datetime,'yyyymmdd-HHMM');
 save_dir = pdir ;
 addpath(genpath(save_dir)) ;
-vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
+vidfile = [save_dir, '\', filetime, '_', num2str(sweepNum), '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName];
 
 %
@@ -23,7 +23,8 @@ inputCam.DiskLogger = vidfile;
 startTime = datetime('now', 'format', 'HH:mm:ss.SSS');
 currentTime = datetime('now', 'format', 'HH:mm:ss.SSS');
 
-frameTimes = datetime(zeros(frames,1), 0, 0, 'format', 'HH:mm:ss.SSS');
+%frameTimes = datetime(zeros(frames,1), 0, 0, 'format', 'HH:mm:ss.SSS');
+frameTimes = datetime('now', 'format', 'HH:mm:ss.SSS');
 
 open(vidfile);
 start(inputCam);
@@ -44,6 +45,9 @@ while seconds(currentTime-startTime) < sweepTimeSeconds
     disp(inputCam.FramesAcquired); 
     disp('frames logged to disk');
     disp(inputCam.DiskLoggerFrameCount); 
+    
+    currentTime = datetime('now', 'format', 'HH:mm:ss.SSS');
+    
 end
 %wait for final frame 
 if inputCam.DiskLoggerFrameCount~=inputCam.FramesAcquired
@@ -61,8 +65,8 @@ clear vidfile ;
 disp('Done') ;
 
 expname = [save_dir, '\', filetime,imaqhwinfo(inputCam).AdaptorName, ...
-    '_', imaqhwinfo(inputCam).DeviceName, '_time','.txt'];
-dlmwrite(expname,char(times),'delimiter','');
+    '_', imaqhwinfo(inputCam).DeviceName, '_time','.csv'];
+writematrix(frameTimes, expname);
 
 outputStatus='done';
 %disp(['finished'+outputStatus]);

@@ -14,9 +14,12 @@ current_time = datetime('now', 'format', 'HH:mm:ss.SSS');
 triggerTimes = datetime('now', 'format', 'HH:mm:ss.SSS');
 
 while seconds(current_time-start_time) < sweepTimeSeconds
+    
     [data,~] = inputSingleScan(daqSession);
     dataTimeSeries = [dataTimeSeries ;data] ;
     triggerTimes = [triggerTimes ; datetime('now', 'format', 'HH:mm:ss.SSS')];
+    current_time = datetime('now', 'format', 'HH:mm:ss.SSS');
+    
 end
     
 exp_name = [saveDir, '\', filetime, 'rotary_test_out.csv'] ; 
