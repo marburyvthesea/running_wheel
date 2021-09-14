@@ -1,4 +1,4 @@
-function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, sweepTimeSeconds, pdir, sweepNum)
+function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, camNum, sweepTimeSeconds, pdir, sweepNum)
  
 %%init
 triggerconfig(inputCam, 'manual');
@@ -11,7 +11,7 @@ filetime = datestr(datetime,'yyyymmdd-HHMM');
 save_dir = pdir ;
 addpath(genpath(save_dir)) ;
 vidfile = [save_dir, '\', filetime, '_', num2str(sweepNum), '_', imaqhwinfo(inputCam).AdaptorName, ...
-    '_', imaqhwinfo(inputCam).DeviceName];
+    '_', imaqhwinfo(inputCam).DeviceName, '_' , num2str(camNum)];
 
 %
 vidfile = VideoWriter(vidfile);
@@ -65,7 +65,7 @@ clear vidfile ;
 disp('Done') ;
 
 expname = [save_dir, '\', filetime,imaqhwinfo(inputCam).AdaptorName, ...
-    '_', imaqhwinfo(inputCam).DeviceName, '_time','.csv'];
+    '_', imaqhwinfo(inputCam).DeviceName, '_' , num2str(camNum) , '_time','.csv'];
 writematrix(frameTimes, expname);
 
 outputStatus='done';

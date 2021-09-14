@@ -1,5 +1,5 @@
 %% initiate DAQ and cameras
-function [pdir, cam, behavCam, dq] = init_system_jjm(options)
+function [pdir, cam, behavCam, behavCam2, dq] = init_system_jjm(options)
 %% specify optional arguments depending on which components to use
 % e.g. for FLIR camera 
 % cam = videoinput('pointgrey', 1,'F7_Mono8_1920x1200_Mode0');
@@ -13,6 +13,9 @@ function [pdir, cam, behavCam, dq] = init_system_jjm(options)
         options.behavCam_name (1,1) string = 'off';
         options.behavCam_devicenum (1,1)  double = 0;
         options.behavCam_imgformat (1,1)  string = 'off';
+        options.behavCam2_name (1,1) string = 'off';
+        options.behavCam2_devicenum (1,1)  double = 0;
+        options.behavCam2_imgformat (1,1)  string = 'off';
         options.DAQ (1,1) string = 'off'; 
     end
 %% config DAQ and FLIR
@@ -47,6 +50,19 @@ if strcmp(options.behavCam_name,'off')==0
 else strcmp(options.behavCam_name,'off')
     behavCam='off';
 end 
+
+%% behavCam 2
+
+if strcmp(options.behavCam2_name,'off')==0
+    behavCam2 = videoinput(options.behavCam2_name, options.behavCam2_devicenum, options.behavCam2_imgformat);
+    triggerconfig(behavCam2, 'manual');
+    behavCam2.FramesPerTrigger = 1;
+    behavCam2.TriggerRepeat = Inf;
+    
+else strcmp(options.behavCam2_name,'off')
+    behavCam2='off';
+end 
+
 %% DAQ config
 if strcmp(options.DAQ, 'ni')
     dq = daq.createSession('ni');
