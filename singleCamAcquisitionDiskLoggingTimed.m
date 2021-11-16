@@ -1,10 +1,10 @@
-function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, camNum, sweepTimeSeconds, pdir, sweepNum)
+function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, camNum, sweepTimeSeconds, pdir, sweepNum, freq)
  
 %%init
 triggerconfig(inputCam, 'manual');
 inputCam.FramesPerTrigger = 1;
 inputCam.TriggerRepeat = Inf;
-freq = 20 ;
+
 
 %
 filetime = datestr(datetime,'yyyymmdd-HHMM');

@@ -1,5 +1,5 @@
 %% initiate DAQ and cameras
-function [pdir, cam, behavCam, behavCam2, dq] = init_system_jjm(options)
+function [cam, behavCam, behavCam2, dq] = init_system_jjm(options)
 %% specify optional arguments depending on which components to use
 % e.g. for FLIR camera 
 % cam = videoinput('pointgrey', 1,'F7_Mono8_1920x1200_Mode0');
