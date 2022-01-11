@@ -4,11 +4,11 @@
 %%
 %cam is photometry cam
 [cam, behavCam, behavCam2, dq] = init_system_jjm('behavCam_name', 'winvideo', ...
-    'behavCam_devicenum', 1, ...
+    'behavCam_devicenum', 4, ...
     'behavCam_imgformat', 'Y800_320x240', 'photometryCam_name', 'winvideo', ...
-    'photometryCam_devicenum', 3, 'photometryCam_imgformat', 'MJPG_1024x576', ...
+    'photometryCam_devicenum', 2, 'photometryCam_imgformat', 'MJPG_1024x576', ...
     'behavCam2_name', 'off', ...
-    'behavCam2_devicenum', 3, 'behavCam2_imgformat', 'Y800_320x240', ...
+    'behavCam2_devicenum', 1, 'behavCam2_imgformat', 'Y800_320x240', ...
     'DAQ', 'ni');
 
 %[pdir, cam, behavCam, dq] = init_system_jjm('behavCam_name', 'macvideo', ...
@@ -17,50 +17,46 @@
 src=getselectedsource(behavCam);
 src.FrameRate = '160.0000';
 src.ExposureMode = 'manual';
-src.Brightness = 0;
-src.Contrast = 0;
 src.Exposure = -8;
-src.Gain = 16;
+
 
 %%
 pdir = uigetdir ;
-%%
-num_video_sweeps = 30;
-%num_encoder_sweeps = 2;
-
-%%currently 10 fold higher sampling in encoder sweeps than video sweeps
-
-%samples_to_acquire = 100000; 
-%frames_to_acquire = 1000;
-%samples_to_acquire = frames_to_acquire*10;
-%enter sweep time in seconds 
-sweepTime = 60 ;
-
-%%restrict MATLAB cores for pool to keep resources for miniscope
+%%%restrict MATLAB cores for pool to keep resources for miniscope
 %%software 
+%%
 numcores=7;
 maxNumCompThreads(numcores)
 %create parallel pool with two workers
-p = parpool(numcores);
+p = parpool(numcores);%
+%implay()
 
+%%
+num_video_sweeps = 20;
+sweepTime = 90 ;
 for i=1:num_video_sweeps
 disp('on sweep');
 disp(i); 
     
-f1 = parfeval(@singleCamAcquisitionDiskLoggingTimed, 1, behavCam, 1, sweepTime, pdir, i, 160);
-f3 = parfeval(@singleCamAcquisitionDiskLoggingTimed, 1, cam, 0, sweepTime, pdir, i, 30);
+f1 = parfeval(@singleCamAcquisitionDiskLoggingTimed, 2, behavCam, 1, sweepTime, pdir, i, 160);
+f3 = parfeval(@singleCamAcquisitionDiskLoggingTimed, 2, cam, 0, sweepTime, pdir, i, 30);
 
 %only run encoder while video is also acquiring 
 if strcmp(f1.State, 'running')==1
     f2 = parfeval(p, @acquireEncoderSamplesParallelTimed, 3, sweepTime, pdir);
 
+%if i>1
+%    implay(strcat(vidfile_cam, '.avi'))
+%end
 
-%[outputState_cam] = fetchOutputs(f1);
-[outputState_pCam] = fetchOutputs(f3);
-[outputState_cam2] = fetchOutputs(f2);
+[outputState_behavCam, vidfile_behavCam] = fetchOutputs(f1);
+[outputState_cam, vidfile_cam] = fetchOutputs(f3);
+[outputState_encoder] = fetchOutputs(f2);
+
 end
-%[outputState_encoder, encoderData, triggerTimes] = fetchOutputs(f2);
+
 end
 %%
-
-%cam = imaqfind; delete(cam);
+delete(gcp('nocreate'))
+%%
+cam = imaqfind; delete(cam);

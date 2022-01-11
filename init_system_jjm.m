@@ -22,10 +22,7 @@ function [cam, behavCam, behavCam2, dq] = init_system_jjm(options)
 % close EVERYTHING!
 prev_cam = imaqfind; delete(prev_cam); %clear all; close all; 
 %delete(gcp('nocreate'));
-%% set path
-%global pdir
-pdir = uigetdir ;
-%cd(pdir) ;
+
 %% FLIR camera config
 % create video input object
 % conifgure video object for manual triggering 

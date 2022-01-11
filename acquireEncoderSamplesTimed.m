@@ -3,8 +3,8 @@ outputState='running';
 %for logging data 
 filetime = datestr(datetime,'yyyymmdd-HHMM');
 
-% 7 channels from rotary encoder
-dataTimeSeries = zeros(1,7); 
+% 8 channels from rotary encoder
+dataTimeSeries = zeros(1,8); 
 
 %get current time
 start_time = datetime('now', 'format', 'HH:mm:ss.SSS');

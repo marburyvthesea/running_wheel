@@ -1,4 +1,4 @@
-function [outputStatus] = singleCamAcquisitionDiskLoggingTimed(inputCam, camNum, sweepTimeSeconds, pdir, sweepNum, freq)
+function [outputStatus, vidfileName] = singleCamAcquisitionDiskLoggingTimed(inputCam, camNum, sweepTimeSeconds, pdir, sweepNum, freq)
  
 %%init
 triggerconfig(inputCam, 'manual');
@@ -10,11 +10,11 @@ inputCam.TriggerRepeat = Inf;
 filetime = datestr(datetime,'yyyymmdd-HHMM');
 save_dir = pdir ;
 addpath(genpath(save_dir)) ;
-vidfile = [save_dir, '\', filetime, '_', num2str(sweepNum), '_', imaqhwinfo(inputCam).AdaptorName, ...
+vidfileName = [save_dir, '\', filetime, '_', num2str(sweepNum), '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName, '_' , num2str(camNum)];
 
 %
-vidfile = VideoWriter(vidfile);
+vidfile = VideoWriter(vidfileName);
 vidfile.FrameRate = freq ;
 inputCam.LoggingMode = 'disk';
 inputCam.DiskLogger = vidfile;
