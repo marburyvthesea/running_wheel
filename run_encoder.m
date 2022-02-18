@@ -41,7 +41,7 @@ num_video_sweeps = 2;
 %frames_to_acquire = 1000;
 %samples_to_acquire = frames_to_acquire*10;
 %enter sweep time in seconds 
-sweepTime = 30 ;
+sweepTime = 10 ;
 
 for i=1:num_video_sweeps
 disp('on sweep');

@@ -1,7 +1,7 @@
 function [outputState, dataTimeSeries, triggerTimes] = acquireEncoderSamplesTimed(sweepTimeSeconds,daqSession, saveDir)
 outputState='running';
 %for logging data 
-filetime = datestr(datetime,'yyyymmdd-HHMM');
+filetime = datestr(datetime,'yyyymmdd-HH-MM-SS');
 
 % 8 channels from rotary encoder
 dataTimeSeries = zeros(1,8); 

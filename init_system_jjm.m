@@ -5,7 +5,7 @@ function [cam, behavCam, behavCam2, dq] = init_system_jjm(options)
 % cam = videoinput('pointgrey', 1,'F7_Mono8_1920x1200_Mode0');
 % cam = videoinput('winvideo', 2,'RGB24_744x480');
 % behavCam = videoinput('winvideo', 1, 'MJPG_1024x576');
-% close EVERYTHING!
+
     arguments
         options.photometryCam_name (1,1) string = 'off';
         options.photometryCam_devicenum (1,1)  double = 0;

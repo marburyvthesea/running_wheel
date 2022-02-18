@@ -7,7 +7,7 @@ inputCam.TriggerRepeat = Inf;
 
 
 %
-filetime = datestr(datetime,'yyyymmdd-HHMM');
+filetime = datestr(datetime,'yyyymmdd-HH-MM-SS');
 save_dir = pdir ;
 addpath(genpath(save_dir)) ;
 vidfileName = [save_dir, '\', filetime, '_', num2str(sweepNum), '_', imaqhwinfo(inputCam).AdaptorName, ...
