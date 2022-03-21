@@ -1,4 +1,5 @@
-function [outputArg1,outputArg2] = loadAlignEncoderToVideosMiniscope()
+function [outputArg1,outputArg2] = loadAlignEncoderToVideosMiniscope(encoderDataPath,encoderTimeStampsFile, ...
+    videoTimeStampsFile)
 
 [filename, folder] = uigetfile('*.avi','File Selector');
 
