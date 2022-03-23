@@ -20,7 +20,7 @@ src.ExposureMode = 'manual';
 src.Exposure = -8;
 %%
 src1=getselectedsource(cam);
-src1.Brightness = 189;
+src1.Brightness = 200;
 
 %%
 pdir = uigetdir ;
@@ -34,7 +34,7 @@ p = parpool(numcores);%
 %implay()
 
 %%
-num_video_sweeps = 21;
+num_video_sweeps = 14;
 sweepTime = 90 ;
 for i=1:num_video_sweeps
 disp('on sweep');
