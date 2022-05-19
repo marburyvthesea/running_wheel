@@ -34,7 +34,7 @@ p = parpool(numcores);%
 %implay()
 
 %%
-num_video_sweeps = 14;
+num_video_sweeps = 21;
 sweepTime = 90 ;
 for i=1:num_video_sweeps
 disp('on sweep');

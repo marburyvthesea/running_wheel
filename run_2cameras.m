@@ -29,8 +29,8 @@ num_video_sweeps = 2;
 %num_encoder_sweeps = 2;
 src.ExposureMode = 'manual';
 src2.ExposureMode = 'manual';
-src2.FrameRate = '120.0005';
-src.FrameRate = '120.0005';
+src2.FrameRate = '80.0000';
+src.FrameRate = '160.0000';
 src.Exposure = -6;
 src2.Exposure = -6;
 %%currently 10 fold higher sampling in encoder sweeps than video sweeps
