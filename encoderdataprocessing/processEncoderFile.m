@@ -1,16 +1,14 @@
-
-%% load up encoder data files to get instantaneous velocity 
-
-disp('load rotary encoder data file');
-[encoderDataFile, encoderDataPath] = uigetfile('*.csv','File Selector');
-disp('load rotary encoder timestamps file');
-[encoderTimeStampsFile, encoderDataPath] = uigetfile('*.csv','File Selector');
-
+function [encoderOutput] = processEncoderFile(inputEncoderDataPath, inputEncoderDataFile, inputEncoderTimeStampsFile)
 %% load rotary encoder data and create a matlab time table
+
+disp('opening');
+disp(inputEncoderDataPath);
+disp(inputEncoderDataFile);
+
 %encoderTimeStamps=readmatrix(strcat(encoderDataPath, encoderTimeStampsFile), 'OutputType', 'datetime');
 %encoderData=readmatrix(strcat(encoderDataPath, encoderDataFile));
-encoderData=csvread(strcat(encoderDataPath,encoderDataFile));
-encoderTimeStamps=readtable(strcat(encoderDataPath,encoderTimeStampsFile));
+encoderData=csvread(strcat(inputEncoderDataPath, '/',inputEncoderDataFile));
+encoderTimeStamps=readtable(strcat(inputEncoderDataPath, '/',inputEncoderTimeStampsFile));
 
 %add encoder data to timestamps table
 %this should be channel A 
@@ -25,9 +23,9 @@ encoderTimeStamps.Channel7 = encoderData(:, 7);
 encoderTimeStamps.Channel8 = encoderData(:, 8);
 %%
 %%find threshold crossings in channel A & B
-Threshold=2;
-thresholdCrossingIndiciesA = getPositiveThresholdCrossingsFromChannel(encoderTimeStamps.Channel1, 2);
-thresholdCrossingIndiciesB = getPositiveThresholdCrossingsFromChannel(encoderTimeStamps.Channel4, 2);
+threshold=2;
+thresholdCrossingIndiciesA = getPositiveThresholdCrossingsFromChannel(encoderTimeStamps.Channel1, threshold);
+thresholdCrossingIndiciesB = getPositiveThresholdCrossingsFromChannel(encoderTimeStamps.Channel4, threshold);
 thresholdCrossingTimesA = encoderTimeStamps.Var1(thresholdCrossingIndiciesA);
 thresholdCrossingTimesB = encoderTimeStamps.Var1(thresholdCrossingIndiciesB);
 crossingIntervalsA = diff(thresholdCrossingTimesA);
@@ -49,13 +47,18 @@ velocityArray = 1./instantaneousIntervalArray;
 %% find direction of velocity 
 %compare timing of pulses, either "A" preceedes "B" or "B","A"
 velocityDirection=zeros(length(encoderTimeStamps.Channel1), 1);
-velocityDirection(1:min(thresholdCrossingIndiciesA(1),thresholdCrossingIndiciesB(1)), 1) = nan ;
-if length(thresholdCrossingIndiciesA)>1 
+
+if length(thresholdCrossingIndiciesA) && length(thresholdCrossingIndiciesB)>1 
+    velocityDirection(1:min(thresholdCrossingIndiciesA(1),thresholdCrossingIndiciesB(1)), 1) = nan ;
     for i=1:min(length(thresholdCrossingIndiciesA), length(thresholdCrossingIndiciesB)) 
-        if thresholdCrossingIndiciesA(i)<thresholdCrossingIndiciesB(i) 
+        if thresholdCrossingIndiciesA(i)<thresholdCrossingIndiciesB(i) && i+1<length(thresholdCrossingIndiciesA)
             velocityDirection(thresholdCrossingIndiciesA(i):thresholdCrossingIndiciesA(i+1), 1) = 1; 
-        else
+        elseif thresholdCrossingIndiciesA(i)<thresholdCrossingIndiciesB(i) && ~(i+1<length(thresholdCrossingIndiciesA))
+            velocityDirection(thresholdCrossingIndiciesA(i), 1) = 1;        
+        elseif thresholdCrossingIndiciesA(i)>thresholdCrossingIndiciesB(i) && i+1<length(thresholdCrossingIndiciesB)
             velocityDirection(thresholdCrossingIndiciesB(i):thresholdCrossingIndiciesB(i+1), 1) = -1;
+        else 
+            velocityDirection(thresholdCrossingIndiciesB(i), 1) = -1;
         end
     end
 else
@@ -63,13 +66,17 @@ else
 end
 % make directional velocity array
 directionalVelocity=velocityArray.*velocityDirection;
-
 %% add to table 
 % 
 encoderTimeStamps.('absoluteVelocity')=velocityArray;
 encoderTimeStamps.('vectorVelocity')=directionalVelocity;
 encoderTimeStamps.('instantaneousIntervals')=instantaneousIntervalArray;
 
-        
+%% add variable for filename
+encoderTimeStamps.('FileName')=repmat(inputEncoderDataFile, size(encoderTimeStamps, 1), 1);
+
+encoderOutput = encoderTimeStamps;
 %% load video time stamp file and add in column with frame number and video file
 %videoTimeStamps=readmatrix(strcat(encoder_data_path, videoTimeStampsFile), 'OutputType', 'datetime');
+
+end 
