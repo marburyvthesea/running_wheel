@@ -20,6 +20,7 @@ maxSmoothedVelocity = max(smoothedVelocity( ~any( isnan( smoothedVelocity ) | is
 meanSmoothedVelocity = mean(smoothedVelocity( ~any( isnan( smoothedVelocity ) | isinf( smoothedVelocity ), 2 ),: ));
 
 statsTable = table(percentActive, maxSmoothedVelocity, meanSmoothedVelocity);
+statsTable.('FileName')=repmat(encoderOutputFile, size(1,1), 1);
 
 end
 

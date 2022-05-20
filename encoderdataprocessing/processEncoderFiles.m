@@ -1,12 +1,13 @@
 %%load up rotary encoder data in a directory and process 
 
 dataDirectory = uigetdir ; 
-analysisDirectory = '/Users/johnmarshall/Documents/Analysis/running_wheel_analysis/';
-dirParts = strsplit(dataDirectory, '/');
-saveName = dirParts{1, length(dirParts)};
+analysisDirectory = 'F:\JJM\running_wheel_data\analysis\';
+dirParts = strsplit(dataDirectory, '\');
+saveName_01 = dirParts{1, length(dirParts)};
+saveName_00 = dirParts{1, length(dirParts)-1};
 
-listingTimeStamps = struct2table(dir(strcat(dataDirectory, '/*', 'rotary_test_out_timestamps.csv')));
-listingEncoderData = struct2table(dir(strcat(dataDirectory, '/*', 'rotary_test_out.csv')));
+listingTimeStamps = struct2table(dir(strcat(dataDirectory, '\*', 'rotary_test_out_timestamps.csv')));
+listingEncoderData = struct2table(dir(strcat(dataDirectory, '\*', 'rotary_test_out.csv')));
 
 outputTable = processEncoderFile(listingTimeStamps.folder{1,1}, listingEncoderData.name{1,1}, listingTimeStamps.name{1,1}); 
 
@@ -17,6 +18,8 @@ for i=2:height(listingTimeStamps)
     outputTable = [outputTable; nextOutputTable];
 end
 % save to output variable
-save(strcat(analysisDirectory, saveName, '.mat'), 'outputTable');
-
+disp('saving')
+save(strcat(analysisDirectory, saveName_00, '_',saveName_01, '.mat'), 'outputTable');
+disp('saved')
+disp(strcat(analysisDirectory, saveName_00, '_',saveName_01, '.mat'))
 

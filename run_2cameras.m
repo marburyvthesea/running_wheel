@@ -20,7 +20,7 @@ src2=getselectedsource(behavCam2);
 pdir = uigetdir ;
 %%
 numcores=7;
-maxNumCompThreads(numcores)
+maxNumCompThreads(numcores);
 %create parallel pool with two workers
 p = parpool(numcores);%
 %implay()
@@ -33,19 +33,18 @@ src2.FrameRate = '80.0000';
 src.FrameRate = '160.0000';
 src.Exposure = -6;
 src2.Exposure = -6;
-%%currently 10 fold higher sampling in encoder sweeps than video sweeps
 
-%samples_to_acquire = 100000; 
-%frames_to_acquire = 1000;
-%samples_to_acquire = frames_to_acquire*10;
 %enter sweep time in seconds 
 sweepTime = 10 ;
 
-f1 = parfeval(@singleCamWarmUp, 1, behavCam, 1, 90, pdir, i, str2num(src.FrameRate));
-f2 = parfeval(@singleCamWarmUp, 1, behavCam2, 3, 90, pdir, i, str2num(src2.FrameRate));
+%run camera warm up for 90 seconds  
+f1 = parfeval(@singleCamWarmUpMemLog, 2, behavCam, 90);
+f2 = parfeval(@singleCamWarmUpMemLog, 2, behavCam2, 90);
+%f1 = parfeval(@singleCamWarmUp, 1, behavCam, 1, 90, pdir, i, str2num(src.FrameRate));
+%f2 = parfeval(@singleCamWarmUp, 1, behavCam2, 3, 90, pdir, i, str2num(src2.FrameRate));
 
-[outputState_cam] = fetchOutputs(f1);
-[outputState_cam2] = fetchOutputs(f2);
+[outputState_cam, framesTriggered] = fetchOutputs(f1);
+[outputState_cam2, framesTriggeredCam2] = fetchOutputs(f2);
 
 for i=1:num_video_sweeps
 disp('on sweep');
@@ -66,4 +65,5 @@ f2 = parfeval(@singleCamAcquisitionDiskLoggingTimed, 1, behavCam2, 3, sweepTime,
 end 
 %%
 
+cam = imaqfind; delete(cam);
 cam = imaqfind; delete(cam);
