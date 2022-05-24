@@ -7,7 +7,7 @@
     'behavCam_imgformat', 'Y800_320x240', 'photometryCam_name', 'off', ...
     'photometryCam_devicenum', 3, 'photometryCam_imgformat', 'MJPG_1024x576', ...
     'behavCam2_name', 'winvideo', ...
-    'behavCam2_devicenum', 3, 'behavCam2_imgformat', 'Y800_320x240', ...
+    'behavCam2_devicenum', 4, 'behavCam2_imgformat', 'Y800_320x240', ...
     'DAQ', 'ni');
 
 %[pdir, cam, behavCam, dq] = init_system_jjm('behavCam_name', 'macvideo', ...
@@ -35,9 +35,10 @@ src.Exposure = -6;
 src2.Exposure = -6;
 
 %enter sweep time in seconds 
-sweepTime = 10 ;
+sweepTime = 90 ;
 
 %run camera warm up for 90 seconds  
+disp('warming up');
 f1 = parfeval(@singleCamWarmUpMemLog, 2, behavCam, 90);
 f2 = parfeval(@singleCamWarmUpMemLog, 2, behavCam2, 90);
 %f1 = parfeval(@singleCamWarmUp, 1, behavCam, 1, 90, pdir, i, str2num(src.FrameRate));
@@ -45,6 +46,7 @@ f2 = parfeval(@singleCamWarmUpMemLog, 2, behavCam2, 90);
 
 [outputState_cam, framesTriggered] = fetchOutputs(f1);
 [outputState_cam2, framesTriggeredCam2] = fetchOutputs(f2);
+disp('beginning acquisition');
 
 for i=1:num_video_sweeps
 disp('on sweep');
