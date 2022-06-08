@@ -71,6 +71,7 @@ directionalVelocity=velocityArray.*velocityDirection;
 encoderTimeStamps.('absoluteVelocity')=velocityArray;
 encoderTimeStamps.('vectorVelocity')=directionalVelocity;
 encoderTimeStamps.('instantaneousIntervals')=instantaneousIntervalArray;
+encoderTimeStamps.('miniscopeFrameGrabTTL')=encoderTimeStamps.Channel2;
 
 %% add variable for filename
 encoderTimeStamps.('FileName')=repmat(inputEncoderDataFile, size(encoderTimeStamps, 1), 1);

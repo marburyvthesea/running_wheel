@@ -1,7 +1,7 @@
 %%load up rotary encoder data in a directory and process 
 
 dataDirectory = uigetdir ; 
-analysisDirectory = 'F:\JJM\running_wheel_data\analysis\';
+analysisDirectory = 'F:\JJM\running_wheel_analysis\r2_8_day_1\';
 dirParts = strsplit(dataDirectory, '\');
 saveName_01 = dirParts{1, length(dirParts)};
 saveName_00 = dirParts{1, length(dirParts)-1};
@@ -20,6 +20,7 @@ end
 % save to output variable
 disp('saving')
 save(strcat(analysisDirectory, saveName_00, '_',saveName_01, '.mat'), 'outputTable');
+writetable(outputTable, strcat(analysisDirectory, saveName_00, '_',saveName_01, '.csv'), 'Delimiter',';');
 disp('saved')
 disp(strcat(analysisDirectory, saveName_00, '_',saveName_01, '.mat'))
 
